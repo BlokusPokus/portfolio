@@ -199,10 +199,17 @@ export async function parseAuthors(authorIds: string[] = []) {
 
   return authorIds.map((id) => {
     const author = authorMap.get(id)
+    const av = author?.data?.avatar
+    const avatarSrc =
+      !av
+        ? '/static/logo.png'
+        : typeof av === 'string'
+          ? av
+          : av.src
     return {
       id,
       name: author?.data?.name || id,
-      avatar: author?.data?.avatar || '/static/logo.png',
+      avatar: avatarSrc,
       isRegistered: !!author,
     }
   })
