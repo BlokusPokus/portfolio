@@ -1,19 +1,17 @@
 ---
-import { Button } from '@/components/ui/button'
 import { Icon } from 'astro-icon/components'
 ---
 
-<Button
+<button
+  type="button"
   id="theme-toggle"
-  variant="ghost"
-  size="icon"
   title="Toggle theme"
-  className="-my-2 -me-2 size-8"
+  class="-my-2 -me-2 inline-flex size-8 items-center justify-center rounded-md hover:bg-muted hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] focus-visible:outline-none"
 >
   <Icon name="lucide:sun" class="size-4 dark:hidden" />
   <Icon name="lucide:moon" class="absolute hidden size-4 dark:block" />
   <span class="sr-only">Toggle theme</span>
-</Button>
+</button>
 
 <script is:inline data-astro-rerun>
   ;(() => {
@@ -30,43 +28,30 @@ import { Icon } from 'astro-icon/components'
   })()
 </script>
 
-<script>
-  function handleToggleClick() {
-    const element = document.documentElement
-    const currentTheme = element.getAttribute('data-theme')
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark'
+<script is:inline>
+  ;(() => {
+    const applyTheme = (theme) => {
+      document.documentElement.setAttribute('data-theme', theme)
+      localStorage.setItem('theme', theme)
+    }
 
-    element.classList.add('[&_*]:transition-none')
-    element.setAttribute('data-theme', newTheme)
-    window.getComputedStyle(element).getPropertyValue('opacity')
+    const getCurrentTheme = () =>
+      document.documentElement.getAttribute('data-theme') === 'dark'
+        ? 'dark'
+        : 'light'
 
-    requestAnimationFrame(() => {
-      element.classList.remove('[&_*]:transition-none')
-    })
+    const initThemeToggle = () => {
+      const button = document.getElementById('theme-toggle')
+      if (!button || button.dataset.bound === 'true') return
 
-    localStorage.setItem('theme', newTheme)
-  }
-
-  function initThemeToggle() {
-    document
-      .getElementById('theme-toggle')
-      ?.addEventListener('click', handleToggleClick)
-  }
-
-  initThemeToggle()
-
-  document.addEventListener('astro:after-swap', () => {
-    const storedTheme = localStorage.getItem('theme') || 'light'
-    const element = document.documentElement
-
-    element.classList.add('[&_*]:transition-none')
-    window.getComputedStyle(element).getPropertyValue('opacity')
-    element.setAttribute('data-theme', storedTheme)
-
-    requestAnimationFrame(() => {
-      element.classList.remove('[&_*]:transition-none')
-    })
+      button.addEventListener('click', () => {
+        const nextTheme = getCurrentTheme() === 'dark' ? 'light' : 'dark'
+        applyTheme(nextTheme)
+      })
+      button.dataset.bound = 'true'
+    }
 
     initThemeToggle()
-  })
+    document.addEventListener('astro:after-swap', initThemeToggle)
+  })()
 </script>
