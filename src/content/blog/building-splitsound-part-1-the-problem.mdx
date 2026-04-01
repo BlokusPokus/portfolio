@@ -1,0 +1,77 @@
+---
+title: 'Building SplitSound in Public | Part:1 - The problem'
+description: 'Part 1 of building SplitSound in public: defining the core problem and constraints.'
+date: 2026-04-01
+tags: ['splitsound', 'build-in-public', 'part-1']
+draft: false
+---
+
+import Callout from '@/components/callout.astro'
+
+<Callout title="tldr;" variant="summary">
+Most current sound-separator solutions are either too technical, too limited, or too fragmented. The goal for SplitSound is to make stem-based audio work feel fast and clear in seconds
+</Callout>
+
+## Splitting audio is hard
+
+One of my favorite hobbies is filming and editing drone videos. It’s the perfect blend of creativity, gadgets, and time in nature. If you watched the 2026 Olympics, you probably noticed how loud and distracting drone noise can be—and the same issue shows up in my footage. Nothing kills the viewing experience faster than a constant high-pitched buzz (and yes, editing it over and over can drive me crazy). So I started testing every solution I could think of.
+
+- Removing specific Hz ranges in Adobe Audition made the audio sound thin and unnatural.
+- Using tools like lalal.ai, veed.ai, auphonic, and Adobe Podcast was too limited; they often grouped multiple sounds into the same output.
+- ML models sometimes gave strong results, but they were inconsistent and too complex to set up reliably.
+
+After almost giving up, I found a few open-source models and spent time fine-tuning and testing them. Only one proved both reliable and genuinely strong: [SAM-audio](https://ai.meta.com/blog/sam-audio/),  you can separate sounds into different tracks using text prompts, using a RoBERTa-based model to map text instructions to the target audio to isolate.
+
+Heres the difference:
+
+<div class="my-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+  <div class="rounded-lg border p-4 text-center">
+    <video
+      src="/static/audio-blog1.mp4"
+      controls
+      preload="metadata"
+      class="w-full rounded-md"
+    />
+  </div>
+  <div class="rounded-lg border p-4 text-center">
+    <video
+      src="/static/audio-blog3.mp4"
+      controls
+      preload="metadata"
+      class="w-full rounded-md"
+    />
+  </div>
+</div>
+
+
+At that point, you’d think the problem was solved—but not quite. The model isn’t easily accessible, and running it locally is brutal: it needs around 48GB of RAM just to process about 20 seconds of .wav audio (roughly a 10MB file). I ended up setting up a pod and renting GPUs to use it during editing. Even then, server warm-up takes around five minutes. For non-technical users, this workflow is basically impossible—and honestly, even for me, it’s a pain. That’s when I started thinking: what if I automated the whole process and made it actually enjoyable to use? And then another thought hit me: what if I shared it and turned it into a product?uhhh… This deserves investigation!
+## Is there a market?
+
+So I did some preliminary research to understand demand. How many people are actively looking for ways to improve or separate audio? Google Ads keyword data suggests there are roughly 200,000 searches per month related to audio splitting. That tells me there’s a real unmet need—and it’s exactly where I want to build. 
+
+I even already have my first user (me).
+
+## Why I Believe I can fill this gap
+
+I make videos, I edit them myself, and I got tired of great footage being ruined by annoying audio. So this did not start as some genius business idea. It started with me being frustrated, testing everything I could find, and realizing the current options kind of suck.
+
+What makes me excited is that I’m in a rare spot where I can actually do something about it. I’ve got experience in tech, project building, and AI, which means I can go from idea to real product instead of just complaining that the tools are bad. I’m also very self-taught, so I’m used to figuring things out from scratch, testing weird solutions, and learning as I go.
+
+Basically, I care about the problem, I understand the pain, and I have the skills to try building something better.
+
+## Next steps
+
+<Callout title="Execution plan" variant="note">
+1. I need to think about the architecture! To start, I'll build a high level design, system design interview style, With a lot of black boxes. This will give me (and you) and idea on how we will
+implement it and what feature we will want to create.
+
+2. Create real documentation! I'm lucky to have a lot of experience in project management, so I created documentation that will go through the different steps: Strategy, functional and none functional requirements, potential solutions, conception with the different view and tables, security, deployment, cost and more!
+
+3. Start building
+</Callout>
+
+
+I'll be sharing this all from here, so join along!
+
+
+
