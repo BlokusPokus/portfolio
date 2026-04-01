@@ -2,46 +2,60 @@
 import Breadcrumbs from '@/components/breadcrumbs.astro'
 import Link from '@/components/link.astro'
 import PageHead from '@/components/page-head.astro'
-import ProjectCard from '@/components/project-card.astro'
 import Layout from '@/layouts/layout.astro'
-import { getAllProjects } from '@/lib/data-utils'
+import { formatDate } from '@/lib/utils'
 
-const projects = await getAllProjects()
+const lastUpdated = new Date('2026-04-01')
 ---
 
 <Layout class="max-w-3xl">
   <PageHead slot="head" title="About" />
-  <Breadcrumbs items={[{ label: 'About', icon: 'lucide:info' }]} />
 
-  <section>
-    <div class="min-w-full">
-      <div class="prose mb-8">
-        <p class="mt-0">
-          astro-erudite is an opinionated, unstyled static blogging template
-          that prioritizes simplicity and performance, built with <Link
-            href="https://astro.build"
-            external
-            underline>Astro</Link
-          >, <Link href="https://tailwindcss.com" external underline
-            >Tailwind</Link
-          >, and <Link href="https://ui.shadcn.com" external underline
-            >shadcn/ui</Link
-          >. It provides a clean foundation for your content while being
-          extremely easy to customize.
-        </p>
-        <p>
-          To learn more about the philosophy behind this template, check out the
-          following blog post: <Link
-            href="/blog/the-state-of-static-blogs"
-            underline>The State of Static Blogs in 2024</Link
-          >.
-        </p>
-      </div>
+  <div class="flex flex-col gap-10">
+    <div class="flex flex-col gap-6">
+      <Breadcrumbs items={[{ label: 'About', icon: 'lucide:info' }]} />
 
-      <h2 class="mb-4 text-2xl font-medium">Example Projects Listing</h2>
-      <div class="flex flex-col gap-4">
-        {projects.map((project) => <ProjectCard project={project} />)}
-      </div>
+      <header class="flex flex-col gap-3 border-b border-border pb-8">
+        <h1
+          class="text-3xl font-medium tracking-tight lowercase sm:text-4xl"
+        >
+          about
+        </h1>
+        <p class="text-muted-foreground text-lg font-medium">
+          Some more about me
+        </p>
+        <p class="text-muted-foreground text-sm">
+          Last updated: {formatDate(lastUpdated)}
+        </p>
+      </header>
     </div>
-  </section>
+
+    <article class="prose max-w-none">
+      <p class="mt-0">
+        I build at the intersection of AI, security, and tools people actually
+        use day to day. A lot of what I care about is making powerful ideas
+        usable—whether that is multi-user platforms, safer defaults for AI
+        systems, or creative workflows that do not require a PhD to operate.
+      </p>
+      <p>
+        This site is where I ship in public: project notes, experiments, and
+        longer write-ups when something is worth unpacking. You will see that
+        mix on the <Link href="/" underline>home</Link> page and in the <Link
+          href="/blog"
+          underline>blog</Link
+        >—from infrastructure-heavy work to problems I hit while editing drone
+        footage and trying to fix audio that should have been easy.
+      </p>
+      <p>
+        I am also interested in how the industry agrees on secure AI practices,
+        which is part of why I pay attention to initiatives like the <Link
+          href="https://www.coalitionforsecureai.org"
+          external
+          underline>Coalition for Secure AI</Link
+        >. If something here resonates or you want to collaborate, the best
+        starting point is still this site or the links I keep up to date on the
+        homepage.
+      </p>
+    </article>
+  </div>
 </Layout>

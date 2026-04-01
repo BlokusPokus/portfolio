@@ -55,7 +55,7 @@ const combinedReadingTime =
     : null
 
 const tocSections = await getTOCSections(currentPostId)
-const authors = await parseAuthors((post.data as any).authors ?? [])
+const authors = await parseAuthors(post.data.authors ?? [])
 ---
 
 <Layout>

@@ -1,0 +1,56 @@
+---
+import Breadcrumbs from '@/components/breadcrumbs.astro'
+import Layout from '@/layouts/layout.astro'
+import PageHead from '@/components/page-head.astro'
+import { formatDate } from '@/lib/utils'
+
+const lastUpdated = new Date('2026-04-01')
+---
+
+<Layout class="max-w-3xl">
+  <PageHead slot="head" title="Graveyard" />
+
+  <Breadcrumbs
+    items={[
+      { href: '/blog', label: 'Blog', icon: 'lucide:library-big' },
+      { label: 'Graveyard', icon: 'lucide:archive' },
+    ]}
+  />
+
+  <div class="flex min-h-[calc(100vh-18rem)] flex-col gap-y-8">
+    <section class="flex flex-col gap-y-4">
+      <div class="font-medium lowercase">graveyard</div>
+      <p class="text-muted-foreground text-sm">
+        Where dead projects rest · Last updated: {formatDate(lastUpdated)}
+      </p>
+    </section>
+
+    <article class="prose max-w-none">
+      <p class="mt-0">
+        Not everything ships. Some ideas get built halfway, hit a wall, or get
+        abandoned for a better one. This page is an honest archive: things I
+        stopped investing in, and what they taught me anyway.
+      </p>
+      <p>
+        If you are browsing here, you will find short post-mortems—what I tried,
+        why it ended, and what I would do differently. It is as much for my own
+        memory as for anyone who thinks failure is only useful when it is
+        documented.
+      </p>
+    </article>
+
+    <section class="flex flex-col gap-y-4">
+      <div class="font-medium">Entries</div>
+      <ul class="flex flex-col gap-4">
+        <li>
+          <div
+            class="rounded-xl border p-4 text-muted-foreground text-sm leading-relaxed"
+          >
+            No tombstones yet. When a project is laid to rest, it will show up
+            here.
+          </div>
+        </li>
+      </ul>
+    </section>
+  </div>
+</Layout>
