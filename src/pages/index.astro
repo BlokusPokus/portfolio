@@ -4,14 +4,26 @@ import PageHead from '@/components/page-head.astro'
 import { SITE } from '@/consts'
 import Layout from '@/layouts/layout.astro'
 import { getRecentPosts } from '@/lib/data-utils'
+import { Image } from 'astro:assets'
+
+import bentoImg4216 from '../assets/bento/img-4216.jpg'
+import bentoImg0043 from '../assets/bento/img-0043.jpeg'
+import bentoMonFilm from '../assets/bento/mon-film.jpg'
 
 const blog = await getRecentPosts(SITE.featuredPostCount)
 const repoUrl = 'https://github.com/BlokusPokus/portfolio'
+
+/** Matches the bento grid: 1 col mobile, 2 cols sm, 4 cols lg */
+const bentoPhotoSizes =
+  '(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 25vw'
+const bentoPhotoWidths = [480, 720, 960, 1280] as const
 ---
 
 <Layout class="max-w-5xl">
   <PageHead slot="head" title="Home" />
-  <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+  <section
+    class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:items-stretch"
+  >
 
 
     <article class="rounded-lg border bg-card p-6 aspect-square">
@@ -40,14 +52,19 @@ const repoUrl = 'https://github.com/BlokusPokus/portfolio'
       </div>
     </article>
 
-    <article class="rounded-lg border bg-card/40  aspect-square">
-      <div class="h-full overflow-hidden rounded-md">
-        <img
-          src="/static/IMG_4216.JPG"
-          alt="Portfolio image placeholder"
-          class="h-full w-full object-cover"
-        />
-      </div>
+    <article
+      class="relative min-h-0 overflow-hidden rounded-lg border bg-card/40 aspect-[3/2] sm:aspect-[4/5] lg:aspect-square"
+    >
+      <Image
+        src={bentoImg4216}
+        alt="Portfolio photo"
+        widths={[...bentoPhotoWidths]}
+        sizes={bentoPhotoSizes}
+        quality={85}
+        class="h-full w-full object-cover"
+        loading="lazy"
+        decoding="async"
+      />
     </article>
 
     <article class="rounded-lg border bg-card p-6 aspect-square">
@@ -142,14 +159,19 @@ const repoUrl = 'https://github.com/BlokusPokus/portfolio'
         <span class="text-sm font-medium">DroneTrailTales</span>
       </Link>
     </article>
-    <article class="rounded-lg border bg-card/40 aspect-square">
-      <div class="h-full overflow-hidden rounded-md">
-        <img
-          src="/static/Mon%20film.jpg"
-          alt="Portfolio image placeholder"
-          class="h-full w-full object-cover"
-        />
-      </div>
+    <article
+      class="relative min-h-0 overflow-hidden rounded-lg border bg-card/40 aspect-[3/2] sm:aspect-[4/5] lg:aspect-square"
+    >
+      <Image
+        src={bentoMonFilm}
+        alt="Portfolio photo"
+        widths={[...bentoPhotoWidths]}
+        sizes={bentoPhotoSizes}
+        quality={85}
+        class="h-full w-full object-cover"
+        loading="lazy"
+        decoding="async"
+      />
     </article>
 
     <article
@@ -166,7 +188,7 @@ const repoUrl = 'https://github.com/BlokusPokus/portfolio'
           (JWT, MFA, RBAC), Redis/Postgres infrastructure, and integrations for
           productivity workflows.
         </p>
-        <p class="text-muted-foreground/70 mt-auto text-xs">2026 -> Present</p>
+        <p class="text-muted-foreground/70 mt-auto text-xs">2025 -> 2026</p>
         <div class="flex flex-wrap gap-2">
           <span class="bg-muted text-muted-foreground rounded-md px-2 py-1 text-xs">
             Python
@@ -233,14 +255,19 @@ const repoUrl = 'https://github.com/BlokusPokus/portfolio'
       </Link>
     </article>
 
-    <article class="rounded-lg border bg-card/40 aspect-square">
-      <div class="h-full overflow-hidden rounded-md">
-        <img
-          src="/static/IMG_0043%20(1).jpeg"
-          alt="Portfolio image placeholder"
-          class="h-full w-full object-cover"
-        />
-      </div>
+    <article
+      class="relative min-h-0 overflow-hidden rounded-lg border bg-card/40 aspect-[3/2] sm:aspect-[4/5] lg:aspect-square"
+    >
+      <Image
+        src={bentoImg0043}
+        alt="Portfolio photo"
+        widths={[...bentoPhotoWidths]}
+        sizes={bentoPhotoSizes}
+        quality={85}
+        class="h-full w-full object-cover"
+        loading="lazy"
+        decoding="async"
+      />
     </article>
   </section>
 </Layout>
