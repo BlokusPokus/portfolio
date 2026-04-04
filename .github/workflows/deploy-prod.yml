@@ -24,6 +24,12 @@ jobs:
       - name: Build site
         run: npm run build
 
+      - name: Check secrets exist
+        run: |
+          [ -n "${{ secrets.PROD_HOST }}" ] && echo "PROD_HOST present" || echo "PROD_HOST missing"
+          [ -n "${{ secrets.PROD_USER }}" ] && echo "PROD_USER present" || echo "PROD_USER missing"
+          [ -n "${{ secrets.PROD_SSH_KEY }}" ] && echo "PROD_SSH_KEY present" || echo "PROD_SSH_KEY missing"
+
       - name: Upload build to droplet
         uses: appleboy/scp-action@v0.1.7
         with:
