@@ -4,30 +4,24 @@ import PageHead from '@/components/page-head.astro'
 import { SITE } from '@/consts'
 import Layout from '@/layouts/layout.astro'
 import { getRecentPosts } from '@/lib/data-utils'
-import { Image } from 'astro:assets'
-
-import bentoImg4216 from '../assets/bento/img-4216.jpg'
-import bentoImg0043 from '../assets/bento/img-0043.jpeg'
-import bentoMonFilm from '../assets/bento/mon-film.jpg'
 
 const blog = await getRecentPosts(SITE.featuredPostCount)
 const repoUrl = 'https://github.com/BlokusPokus/portfolio'
-
-/** Matches the bento grid: 1 col mobile, 2 cols sm, 4 cols lg */
-const bentoPhotoSizes =
-  '(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 25vw'
-const bentoPhotoWidths = [480, 720, 960, 1280] as const
 ---
 
-<Layout class="max-w-5xl">
+<Layout class="max-w-[70.4rem]">
   <PageHead slot="head" title="Home" />
   <section
-    class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:items-stretch"
+    class="@container grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 [&>article]:min-h-0 [&>article]:min-w-0"
   >
 
 
-    <article class="rounded-lg border bg-card p-6 aspect-square">
-      <div class="flex h-full flex-col gap-3">
+    <article
+      class="flex min-h-0 flex-col overflow-hidden rounded-lg border bg-card aspect-square w-full self-start"
+    >
+      <div
+        class="flex min-h-0 min-w-0 flex-1 flex-col gap-3 overflow-y-auto p-6"
+      >
         <h2 class="text-lg font-medium leading-snug">Hi, I'm Ian!</h2>
         <p class="text-muted-foreground text-sm leading-relaxed">
           I build products at the edge of AI, security, and creative tools. This
@@ -35,10 +29,14 @@ const bentoPhotoWidths = [480, 720, 960, 1280] as const
         </p>
       </div>
     </article>
-    <article class="rounded-lg border bg-card p-6 aspect-square">
-      <div class="flex h-full flex-col">
-        <h2 class="mb-4 text-lg font-medium leading-snug">Latest blogs</h2>
-        <ul class="space-y-3 overflow-auto pr-1">
+    <article
+      class="flex min-h-0 flex-col overflow-hidden rounded-lg border bg-card aspect-square w-full self-start"
+    >
+      <div class="flex min-h-0 min-w-0 flex-1 flex-col p-6">
+        <h2 class="mb-4 shrink-0 text-lg font-medium leading-snug">
+          Latest blogs
+        </h2>
+        <ul class="min-h-0 flex-1 space-y-3 overflow-y-auto pr-1">
           {
             blog.map((post) => (
               <li>
@@ -53,27 +51,25 @@ const bentoPhotoWidths = [480, 720, 960, 1280] as const
     </article>
 
     <article
-      class="relative isolate overflow-hidden rounded-lg border bg-card/40 aspect-[3/2] sm:aspect-[4/5] lg:aspect-square"
+      class="flex min-h-0 flex-col overflow-hidden rounded-lg border bg-card/40 aspect-square w-full self-start"
     >
-      <!-- Astro Image: picture is inline; prod adds width/height — clip with absolute fill. -->
-      <div
-        class="absolute inset-0 overflow-hidden [&_picture]:block [&_picture]:size-full [&_img]:size-full [&_img]:object-cover"
-      >
-        <Image
-          src={bentoImg4216}
-          alt="Portfolio photo"
-          widths={[...bentoPhotoWidths]}
-          sizes={bentoPhotoSizes}
-          quality={85}
-          class="size-full object-cover"
+      <div class="h-full min-h-0 min-w-0 flex-1 overflow-hidden rounded-md">
+        <img
+          src="/static/IMG_4216.JPG"
+          alt="Portfolio image placeholder"
+          class="h-full w-full object-cover"
           loading="lazy"
           decoding="async"
         />
       </div>
     </article>
 
-    <article class="rounded-lg border bg-card p-6 aspect-square">
-      <div class="flex h-full flex-col gap-3">
+    <article
+      class="flex min-h-0 flex-col overflow-hidden rounded-lg border bg-card aspect-square w-full self-start"
+    >
+      <div
+        class="flex min-h-0 min-w-0 flex-1 flex-col gap-3 overflow-y-auto p-6"
+      >
         <div class="flex items-center gap-2">
           <h2 class="text-lg font-medium leading-snug">Member of</h2>
           <img
@@ -92,11 +88,13 @@ const bentoPhotoWidths = [480, 720, 960, 1280] as const
         </p>
       </div>
     </article>
-    <article class="rounded-lg border bg-card p-6 aspect-square ">
-      <div class="flex h-full flex-col justify-between">
+    <article
+      class="flex min-h-0 flex-col overflow-hidden rounded-lg border bg-card aspect-square w-full self-start"
+    >
+      <div class="flex h-full min-h-0 min-w-0 flex-col justify-between p-6">
         <Link
           href={repoUrl}
-          class="flex flex-1 items-center justify-center"
+          class="flex min-w-0 flex-1 items-center justify-center"
           aria-label="Open GitHub repository"
           title="Open GitHub repository"
           external
@@ -112,21 +110,25 @@ const bentoPhotoWidths = [480, 720, 960, 1280] as const
     </article>
 
     <article
-      class="rounded-lg border bg-card p-6 aspect-[2/1] sm:col-span-2"
+      class="flex min-h-0 flex-col overflow-hidden rounded-lg border bg-card aspect-[2/1] w-full self-start sm:col-span-2 sm:aspect-auto sm:h-[calc((100cqw-1rem)/2)] sm:max-h-[calc((100cqw-1rem)/2)] lg:h-[calc((100cqw-3rem)/4)] lg:max-h-[calc((100cqw-3rem)/4)]"
     >
       <Link
         href="https://github.com/BlokusPokus/SplitSound"
-        class="flex h-full flex-col gap-2 transition-none"
+        class="flex min-h-0 min-w-0 flex-1 flex-col gap-2 overflow-hidden p-6 transition-none"
         external
       >
-        <h3 class="text-lg font-medium">SplitSound</h3>
-        <p class="text-muted-foreground text-sm">
+        <h3 class="shrink-0 text-lg font-medium leading-snug">SplitSound</h3>
+        <p
+          class="text-muted-foreground min-h-0 min-w-0 flex-1 overflow-y-auto text-pretty text-sm"
+        >
           SplitSound is a build-in-public audio separation project designed to
           remove hard-to-clean noise from real-world footage and make
           stem-quality cleanup simple for non-technical creators.
         </p>
-        <p class="text-muted-foreground/70 mt-auto text-xs">2026 -> Present</p>
-        <div class="flex flex-wrap gap-2">
+        <p class="text-muted-foreground/70 shrink-0 text-xs">2026 -> Present</p>
+        <div
+          class="flex shrink-0 flex-nowrap gap-2 overflow-x-auto pb-0.5 [scrollbar-width:thin]"
+        >
           <span class="bg-muted text-muted-foreground rounded-md px-2 py-1 text-xs">
             Python
           </span>
@@ -148,10 +150,12 @@ const bentoPhotoWidths = [480, 720, 960, 1280] as const
         </div>
       </Link>
     </article>
-    <article class="rounded-lg border bg-card/40 p-6 aspect-square">
+    <article
+      class="flex min-h-0 flex-col overflow-hidden rounded-lg border bg-card/40 aspect-square w-full self-start"
+    >
       <Link
         href="https://www.youtube.com/@DroneTrailTales"
-        class="flex h-full flex-col items-center justify-center gap-3"
+        class="flex min-h-0 min-w-0 flex-1 flex-col items-center justify-center gap-3 p-6"
         aria-label="Visit DroneTrailTales on YouTube"
         title="Visit DroneTrailTales on YouTube"
         external
@@ -165,18 +169,13 @@ const bentoPhotoWidths = [480, 720, 960, 1280] as const
       </Link>
     </article>
     <article
-      class="relative isolate overflow-hidden rounded-lg border bg-card/40 aspect-[3/2] sm:aspect-[4/5] lg:aspect-square"
+      class="flex min-h-0 flex-col overflow-hidden rounded-lg border bg-card/40 aspect-square w-full self-start"
     >
-      <div
-        class="absolute inset-0 overflow-hidden [&_picture]:block [&_picture]:size-full [&_img]:size-full [&_img]:object-cover"
-      >
-        <Image
-          src={bentoMonFilm}
-          alt="Portfolio photo"
-          widths={[...bentoPhotoWidths]}
-          sizes={bentoPhotoSizes}
-          quality={85}
-          class="size-full object-cover"
+      <div class="h-full min-h-0 min-w-0 flex-1 overflow-hidden rounded-md">
+        <img
+          src="/static/Mon%20film.jpg"
+          alt="Portfolio image placeholder"
+          class="h-full w-full object-cover"
           loading="lazy"
           decoding="async"
         />
@@ -184,21 +183,25 @@ const bentoPhotoWidths = [480, 720, 960, 1280] as const
     </article>
 
     <article
-      class="rounded-lg border bg-card p-6 aspect-[2/1] sm:col-span-2"
+      class="flex min-h-0 flex-col overflow-hidden rounded-lg border bg-card aspect-[2/1] w-full self-start sm:col-span-2 sm:aspect-auto sm:h-[calc((100cqw-1rem)/2)] sm:max-h-[calc((100cqw-1rem)/2)] lg:h-[calc((100cqw-3rem)/4)] lg:max-h-[calc((100cqw-3rem)/4)]"
     >
       <Link
         href="https://github.com/BlokusPokus/ai_assistant"
-        class="flex h-full flex-col gap-2 transition-none"
+        class="flex min-h-0 min-w-0 flex-1 flex-col gap-2 overflow-hidden p-6 transition-none"
         external
       >
-        <h3 class="text-lg font-medium">Bloop</h3>
-        <p class="text-muted-foreground text-sm">
+        <h3 class="shrink-0 text-lg font-medium leading-snug">Bloop</h3>
+        <p
+          class="text-muted-foreground min-h-0 min-w-0 flex-1 overflow-y-auto text-pretty text-sm"
+        >
           A production-ready, multi-user AI assistant platform with secure auth
           (JWT, MFA, RBAC), Redis/Postgres infrastructure, and integrations for
           productivity workflows.
         </p>
-        <p class="text-muted-foreground/70 mt-auto text-xs">2025 -> 2026</p>
-        <div class="flex flex-wrap gap-2">
+        <p class="text-muted-foreground/70 shrink-0 text-xs">2025 -> 2026</p>
+        <div
+          class="flex shrink-0 flex-nowrap gap-2 overflow-x-auto pb-0.5 [scrollbar-width:thin]"
+        >
           <span class="bg-muted text-muted-foreground rounded-md px-2 py-1 text-xs">
             Python
           </span>
@@ -221,8 +224,12 @@ const bentoPhotoWidths = [480, 720, 960, 1280] as const
       </Link>
     </article>
 
-    <article class="rounded-lg border bg-card p-6 aspect-square">
-      <div class="flex h-full flex-col justify-between">
+    <article
+      class="flex min-h-0 flex-col overflow-hidden rounded-lg border bg-card aspect-square w-full self-start"
+    >
+      <div
+        class="flex min-h-0 min-w-0 flex-1 flex-col justify-between overflow-y-auto p-6"
+      >
         <h2 class="text-lg font-medium leading-snug">Resume</h2>
         <p class="text-muted-foreground text-sm">
           A concise overview of experience, selected work, and technical skills.
@@ -238,21 +245,27 @@ const bentoPhotoWidths = [480, 720, 960, 1280] as const
     </article>
 
     <article
-      class="rounded-lg border bg-card p-6 aspect-[2/1] sm:col-span-2"
+      class="flex min-h-0 flex-col overflow-hidden rounded-lg border bg-card aspect-[2/1] w-full self-start sm:col-span-2 sm:aspect-auto sm:h-[calc((100cqw-1rem)/2)] sm:max-h-[calc((100cqw-1rem)/2)] lg:h-[calc((100cqw-3rem)/4)] lg:max-h-[calc((100cqw-3rem)/4)]"
     >
-      <div class="flex h-full flex-col gap-3">
-        <h2 class="text-lg font-medium leading-snug">Agents and Pipelines</h2>
-        <p class="text-muted-foreground text-sm leading-relaxed">
+      <div
+        class="flex min-h-0 min-w-0 flex-1 flex-col gap-3 overflow-y-auto p-6"
+      >
+        <h2 class="shrink-0 text-lg font-medium leading-snug">
+          Agents and Pipelines
+        </h2>
+        <p class="text-muted-foreground min-h-0 text-sm leading-relaxed">
           Notes on AI-assisted coding: how I wire agents, tools, and models into
           pipelines that stay reliable end to end—more detail soon.
         </p>
       </div>
     </article>
 
-    <article class="rounded-lg border bg-card p-6 aspect-square">
+    <article
+      class="flex min-h-0 flex-col overflow-hidden rounded-lg border bg-card aspect-square w-full self-start"
+    >
       <Link
         href="/graveyard"
-        class="flex h-full flex-col justify-between gap-3 transition-none"
+        class="flex min-h-0 min-w-0 flex-1 flex-col justify-between gap-3 overflow-y-auto p-6 transition-none"
       >
         <div class="flex flex-col gap-3">
           <h2 class="text-lg font-medium leading-snug">Graveyard</h2>
@@ -265,18 +278,13 @@ const bentoPhotoWidths = [480, 720, 960, 1280] as const
     </article>
 
     <article
-      class="relative isolate overflow-hidden rounded-lg border bg-card/40 aspect-[3/2] sm:aspect-[4/5] lg:aspect-square"
+      class="flex min-h-0 flex-col overflow-hidden rounded-lg border bg-card/40 aspect-square w-full self-start"
     >
-      <div
-        class="absolute inset-0 overflow-hidden [&_picture]:block [&_picture]:size-full [&_img]:size-full [&_img]:object-cover"
-      >
-        <Image
-          src={bentoImg0043}
-          alt="Portfolio photo"
-          widths={[...bentoPhotoWidths]}
-          sizes={bentoPhotoSizes}
-          quality={85}
-          class="size-full object-cover"
+      <div class="h-full min-h-0 min-w-0 flex-1 overflow-hidden rounded-md">
+        <img
+          src="/static/IMG_0043%20(1).jpeg"
+          alt="Portfolio image placeholder"
+          class="h-full w-full object-cover"
           loading="lazy"
           decoding="async"
         />
