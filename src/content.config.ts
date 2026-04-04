@@ -41,4 +41,23 @@ const projects = defineCollection({
     }),
 })
 
-export const collections = { blog, authors, projects }
+const topicEntrySchema = z.object({
+  title: z.string(),
+  description: z.string(),
+  date: z.coerce.date(),
+  draft: z.boolean().optional(),
+  order: z.number().optional(),
+  link: z.url().optional(),
+})
+
+const agents = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/agents' }),
+  schema: topicEntrySchema,
+})
+
+const graveyard = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/graveyard' }),
+  schema: topicEntrySchema,
+})
+
+export const collections = { blog, authors, projects, agents, graveyard }

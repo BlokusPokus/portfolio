@@ -1,0 +1,192 @@
+---
+title: Auto-Deploy a Static Website from GitHub to a VPS with GitHub Actions
+description: >-
+  Create a deployment flow where every push or merge to main automatically publishes a new version of your website to your production server.
+
+date: 2026-04-01
+draft: false
+---
+
+I wanted a setup where merging to `main` meant the live site updated without me SSHing in and copying files by hand. If your code is on GitHub, your box is a VPS (DigitalOcean, Hetzner, whatever), Nginx serves the site, and the frontend is something static-friendly like Astro or Vite, this is the pattern I’d reach for.
+
+**What actually happens:** GitHub Actions builds the site, connects over SSH, uploads the built files, swaps them into the directory Nginx reads from, then reloads Nginx if you need it. I like building in CI rather than on the server—you pick the Node version, installs and builds are repeatable, and production only has to serve HTML and assets. No “why does prod build differently?” surprises.
+
+Roughly:
+
+```
+GitHub main → Actions → install deps → build → upload dist/ → replace live files → reload Nginx
+```
+
+**When it fits:** Static output after build, you already run Nginx, you want deploy-on-merge, and you’d rather not maintain a full frontend toolchain on the VPS. Works great for Astro, Vite, exported React/Vue apps, Next static export, docs sites, portfolios.
+
+---
+
+## 1. SSH key just for deploys
+
+Generate a dedicated key pair on your machine:
+
+```bash
+ssh-keygen -t ed25519 -C "github-actions-deploy"
+```
+
+You get a private key and a public key. Public goes on the server (`authorized_keys`); private goes in GitHub repo secrets. Don’t reuse your personal laptop key—if the secret ever leaks, you revoke one deploy key, not your whole identity.
+
+---
+
+## 2. Let the server trust that key
+
+On the account GitHub Actions will use:
+
+```bash
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+touch ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+```
+
+Append the public key:
+
+```bash
+echo "YOUR_PUBLIC_KEY_HERE" >> ~/.ssh/authorized_keys
+```
+
+---
+
+## 3. Prove SSH works before you automate
+
+From your laptop:
+
+```bash
+ssh -i ~/.ssh/your_deploy_key user@your_server_ip
+```
+
+If this fails, fix it before touching Actions. Half the “deploy is broken” threads are really SSH or firewall issues, and testing manually saves you that guesswork.
+
+---
+
+## 4. Know what Nginx is actually serving
+
+Before you script anything, answer: which directory is the live site? Static setups often use something like `/var/www/site`, a bind mount, or a Docker volume—not necessarily a clone of your repo. Your workflow should update **that** directory, not your source tree on disk.
+
+---
+
+## 5. GitHub secrets
+
+In the repo: **Settings → Secrets and variables → Actions**. Typical names:
+
+| Secret | What it is |
+|--------|----------------|
+| `PROD_HOST` | Server IP or hostname |
+| `PROD_USER` | SSH user for deploy |
+| `PROD_SSH_KEY` | Full private key (`cat ~/.ssh/your_deploy_key`), including the `BEGIN`/`END` lines—not the `.pub` file |
+
+---
+
+## 6. The workflow
+
+Add `.github/workflows/deploy-prod.yml`:
+
+```yaml
+name: Deploy Static Site
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build site
+        run: npm run build
+
+      - name: Upload build to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USER }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          source: "dist/*"
+          target: "/tmp/site-build"
+
+      - name: Publish site
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USER }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          script: |
+            set -e
+
+            test -d /tmp/site-build/dist
+
+            rm -rf /tmp/site-live
+            mkdir -p /tmp/site-live
+            cp -r /tmp/site-build/dist/* /tmp/site-live/
+
+            rm -rf /var/www/site/*
+            cp -r /tmp/site-live/* /var/www/site/
+
+            systemctl reload nginx || systemctl restart nginx
+```
+
+---
+
+## 7. Tune it for your project
+
+- **Build output:** Many tools use `dist/`; others use `build/`, `out/`, etc. Match `source:` and the paths in the publish script.
+- **Live directory:** Replace `/var/www/site/` with whatever Nginx’s `root` points at.
+- **Reload:** Might be `systemctl reload nginx`, `docker restart your_nginx_container`, or sometimes nothing if files are bind-mounted and picked up immediately.
+
+---
+
+## Why CI build vs build-on-server
+
+CI owns the Node version and lockfile; the server just receives artifacts. Building on the VPS means installing deps there, matching Node, slower deploys, and more ways for prod to drift. For static sites, “build elsewhere, copy files in” is usually the calmer option.
+
+**Mental model:** GitHub is source of truth; `dist/` (or equivalent) is the artifact; the Nginx `root` is production. Don’t conflate repo checkout, upload scratch space, and live web root—keeping them separate makes partial uploads and bad builds less scary.
+
+**Hygiene:** Upload to something like `/tmp/site-build`, stage to `/tmp/site-live`, validate the tree exists, *then* replace the live folder so you don’t half-wipe the site mid-transfer.
+
+---
+
+## Optional extras
+
+- **Backup before replace:** `cp -r /var/www/site /var/www/site-backup-$(date +%Y%m%d-%H%M%S)` for a quick rollback.
+- **Gates before deploy:** `npm run lint`, `npm run test`, then build—whatever you trust.
+- **Branch discipline:** Deploy from `main`, protect it, require reviews if you want human eyes on every release.
+- **Non-root deploy user** when you can—limits blast radius if a key leaks.
+
+---
+
+## When something breaks
+
+I go in this order:
+
+1. **SSH** — Same key, same user, from my machine?
+2. **Secrets** — Names and values what the workflow expects?
+3. **Build** — Does `npm run build` pass in Actions?
+4. **Upload** — Files land under `/tmp/site-build` (or wherever you pointed)?
+5. **Publish** — Copy step actually hits the directory Nginx serves?
+6. **Nginx** — Config `root` matches the folder you’re updating?
+
+Almost every failure I’ve seen sits in one of those buckets.
+
+---
+
+## Short version
+
+GitHub Actions builds the site, ships the static output over SSH, drops it where Nginx looks, reloads the server if needed. That loop is boring in a good way: GitHub for code, Actions for build + deploy, SSH for access, Nginx for serving, one clear folder as the deploy target. Simple enough to maintain, flexible enough to grow.
