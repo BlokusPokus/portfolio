@@ -53,18 +53,23 @@ const bentoPhotoWidths = [480, 720, 960, 1280] as const
     </article>
 
     <article
-      class="relative min-h-0 overflow-hidden rounded-lg border bg-card/40 aspect-[3/2] sm:aspect-[4/5] lg:aspect-square"
+      class="relative isolate overflow-hidden rounded-lg border bg-card/40 aspect-[3/2] sm:aspect-[4/5] lg:aspect-square"
     >
-      <Image
-        src={bentoImg4216}
-        alt="Portfolio photo"
-        widths={[...bentoPhotoWidths]}
-        sizes={bentoPhotoSizes}
-        quality={85}
-        class="h-full w-full object-cover"
-        loading="lazy"
-        decoding="async"
-      />
+      <!-- Astro Image: picture is inline; prod adds width/height — clip with absolute fill. -->
+      <div
+        class="absolute inset-0 overflow-hidden [&_picture]:block [&_picture]:size-full [&_img]:size-full [&_img]:object-cover"
+      >
+        <Image
+          src={bentoImg4216}
+          alt="Portfolio photo"
+          widths={[...bentoPhotoWidths]}
+          sizes={bentoPhotoSizes}
+          quality={85}
+          class="size-full object-cover"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
     </article>
 
     <article class="rounded-lg border bg-card p-6 aspect-square">
@@ -160,18 +165,22 @@ const bentoPhotoWidths = [480, 720, 960, 1280] as const
       </Link>
     </article>
     <article
-      class="relative min-h-0 overflow-hidden rounded-lg border bg-card/40 aspect-[3/2] sm:aspect-[4/5] lg:aspect-square"
+      class="relative isolate overflow-hidden rounded-lg border bg-card/40 aspect-[3/2] sm:aspect-[4/5] lg:aspect-square"
     >
-      <Image
-        src={bentoMonFilm}
-        alt="Portfolio photo"
-        widths={[...bentoPhotoWidths]}
-        sizes={bentoPhotoSizes}
-        quality={85}
-        class="h-full w-full object-cover"
-        loading="lazy"
-        decoding="async"
-      />
+      <div
+        class="absolute inset-0 overflow-hidden [&_picture]:block [&_picture]:size-full [&_img]:size-full [&_img]:object-cover"
+      >
+        <Image
+          src={bentoMonFilm}
+          alt="Portfolio photo"
+          widths={[...bentoPhotoWidths]}
+          sizes={bentoPhotoSizes}
+          quality={85}
+          class="size-full object-cover"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
     </article>
 
     <article
@@ -256,18 +265,22 @@ const bentoPhotoWidths = [480, 720, 960, 1280] as const
     </article>
 
     <article
-      class="relative min-h-0 overflow-hidden rounded-lg border bg-card/40 aspect-[3/2] sm:aspect-[4/5] lg:aspect-square"
+      class="relative isolate overflow-hidden rounded-lg border bg-card/40 aspect-[3/2] sm:aspect-[4/5] lg:aspect-square"
     >
-      <Image
-        src={bentoImg0043}
-        alt="Portfolio photo"
-        widths={[...bentoPhotoWidths]}
-        sizes={bentoPhotoSizes}
-        quality={85}
-        class="h-full w-full object-cover"
-        loading="lazy"
-        decoding="async"
-      />
+      <div
+        class="absolute inset-0 overflow-hidden [&_picture]:block [&_picture]:size-full [&_img]:size-full [&_img]:object-cover"
+      >
+        <Image
+          src={bentoImg0043}
+          alt="Portfolio photo"
+          widths={[...bentoPhotoWidths]}
+          sizes={bentoPhotoSizes}
+          quality={85}
+          class="size-full object-cover"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
     </article>
   </section>
 </Layout>

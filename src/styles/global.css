@@ -1,5 +1,8 @@
 @import 'tailwindcss';
 
+/* Ensure all templates are scanned for utilities (dev and prod builds). */
+@source '../**/*.{astro,html,js,ts,tsx,md,mdx}';
+
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
 @theme inline {
