@@ -1,3 +1,4 @@
+import type { MarkdownHeading } from 'astro'
 import { getCollection, render, type CollectionEntry } from 'astro:content'
 import { readingTime, calculateWordCountFromHtml } from '@/lib/utils'
 
@@ -28,6 +29,66 @@ export async function getAllProjects(): Promise<CollectionEntry<'projects'>[]> {
     const dateB = b.data.startDate?.getTime() || 0
     return dateB - dateA
   })
+}
+
+export async function getAgentsEntries(): Promise<CollectionEntry<'agents'>[]> {
+  const entries = await getCollection('agents')
+  return entries
+    .filter((e) => !e.data.draft)
+    .sort((a, b) => {
+      const dateDiff = b.data.date.valueOf() - a.data.date.valueOf()
+      if (dateDiff !== 0) return dateDiff
+      return (a.data.order ?? 0) - (b.data.order ?? 0)
+    })
+}
+
+export async function getGraveyardEntries(): Promise<
+  CollectionEntry<'graveyard'>[]
+> {
+  const entries = await getCollection('graveyard')
+  return entries
+    .filter((e) => !e.data.draft)
+    .sort((a, b) => {
+      const dateDiff = b.data.date.valueOf() - a.data.date.valueOf()
+      if (dateDiff !== 0) return dateDiff
+      return (a.data.order ?? 0) - (b.data.order ?? 0)
+    })
+}
+
+export function getCollectionEntryReadingTime(
+  entry: CollectionEntry<'agents' | 'graveyard'>,
+): string {
+  return readingTime(calculateWordCountFromHtml(entry.body))
+}
+
+export async function getAdjacentAgentsEntries(
+  currentId: string,
+): Promise<{
+  newer: CollectionEntry<'agents'> | null
+  older: CollectionEntry<'agents'> | null
+}> {
+  const entries = await getAgentsEntries()
+  const idx = entries.findIndex((e) => e.id === currentId)
+  if (idx === -1) return { newer: null, older: null }
+  return {
+    newer: idx > 0 ? entries[idx - 1]! : null,
+    older: idx < entries.length - 1 ? entries[idx + 1]! : null,
+  }
+}
+
+export async function getAdjacentGraveyardEntries(
+  currentId: string,
+): Promise<{
+  newer: CollectionEntry<'graveyard'> | null
+  older: CollectionEntry<'graveyard'> | null
+}> {
+  const entries = await getGraveyardEntries()
+  const idx = entries.findIndex((e) => e.id === currentId)
+  if (idx === -1) return { newer: null, older: null }
+  return {
+    newer: idx > 0 ? entries[idx - 1]! : null,
+    older: idx < entries.length - 1 ? entries[idx + 1]! : null,
+  }
 }
 
 export async function getAllTags(): Promise<Map<string, number>> {
@@ -263,6 +324,23 @@ export type TOCSection = {
   title: string
   headings: TOCHeading[]
   subpostId?: string
+}
+
+export function tocSectionsFromHeadings(
+  headings: MarkdownHeading[],
+): TOCSection[] {
+  if (headings.length === 0) return []
+  return [
+    {
+      type: 'parent',
+      title: 'Overview',
+      headings: headings.map((h) => ({
+        slug: h.slug,
+        text: h.text,
+        depth: h.depth,
+      })),
+    },
+  ]
 }
 
 export async function getTOCSections(postId: string): Promise<TOCSection[]> {

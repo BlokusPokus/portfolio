@@ -1,0 +1,154 @@
+---
+import Breadcrumbs, { type BreadcrumbItem } from '@/components/breadcrumbs.astro'
+import Link from '@/components/link.astro'
+import TOCSidebar from '@/components/toc-sidebar.astro'
+import TopicSeriesNavigation from '@/components/topic-series-navigation.astro'
+import { Button } from '@/components/ui/button'
+import {
+  getAdjacentAgentsEntries,
+  getAdjacentGraveyardEntries,
+  getCollectionEntryReadingTime,
+  tocSectionsFromHeadings,
+} from '@/lib/data-utils'
+import { formatDate } from '@/lib/utils'
+import { Icon } from 'astro-icon/components'
+import type { MarkdownHeading } from 'astro'
+import type { CollectionEntry } from 'astro:content'
+
+interface Props {
+  entry: CollectionEntry<'agents'> | CollectionEntry<'graveyard'>
+  basePath: string
+  breadcrumbs: BreadcrumbItem[]
+  headings: MarkdownHeading[] | undefined
+}
+
+const { entry, basePath, breadcrumbs, headings } = Astro.props
+
+const navigation =
+  entry.collection === 'agents'
+    ? await getAdjacentAgentsEntries(entry.id)
+    : await getAdjacentGraveyardEntries(entry.id)
+
+const readingTimeStr = getCollectionEntryReadingTime(entry)
+const tocSections = tocSectionsFromHeadings(headings ?? [])
+const { title, date, link } = entry.data
+---
+
+<section
+  class="grid grid-cols-[minmax(0px,1fr)_min(calc(var(--breakpoint-md)-2rem),100%)_minmax(0px,1fr)] gap-y-6"
+>
+  <div class="col-start-2">
+    <Breadcrumbs items={breadcrumbs} />
+  </div>
+
+  <section class="col-start-2 flex flex-col gap-y-6 text-center">
+    <div class="flex flex-col">
+      <h1
+        class="mb-2 scroll-mt-31 text-3xl leading-tight font-medium sm:text-4xl"
+        id="post-title"
+      >
+        {title}
+      </h1>
+
+      <div
+        class="text-muted-foreground divide-border mb-4 flex flex-col items-center justify-center divide-y text-xs sm:flex-row sm:flex-wrap sm:divide-x sm:divide-y-0 sm:text-sm"
+      >
+        <div
+          class="flex w-full items-center justify-center gap-2 py-2 sm:w-fit sm:px-2 sm:py-0 first:sm:pl-0 last:sm:pr-0"
+        >
+          <span>{formatDate(date)}</span>
+        </div>
+
+        <div
+          class="flex w-full items-center justify-center gap-2 py-2 sm:w-fit sm:px-2 sm:py-0 first:sm:pl-0 last:sm:pr-0"
+        >
+          <span>{readingTimeStr}</span>
+        </div>
+
+        {
+          link && (
+            <div class="flex w-full items-center justify-center gap-2 py-2 sm:w-fit sm:px-2 sm:py-0 first:sm:pl-0 last:sm:pr-0">
+              <Link href={link} external underline class="text-foreground">
+                Related link
+              </Link>
+            </div>
+          )
+        }
+      </div>
+    </div>
+
+    <TopicSeriesNavigation
+      basePath={basePath}
+      newerPost={navigation.newer}
+      olderPost={navigation.older}
+    />
+  </section>
+
+  {
+    tocSections.length > 0 && (
+      <TOCSidebar sections={tocSections} currentPostId={entry.id} />
+    )
+  }
+
+  <article class="prose col-start-2 max-w-none">
+    <slot name="content" />
+  </article>
+
+  <TopicSeriesNavigation
+    basePath={basePath}
+    newerPost={navigation.newer}
+    olderPost={navigation.older}
+  />
+</section>
+
+<Button
+  variant="outline"
+  size="icon"
+  className="group fixed right-8 bottom-8 z-50 hidden"
+  id="scroll-to-top"
+  title="Scroll to top"
+  aria-label="Scroll to top"
+>
+  <Icon
+    name="lucide:arrow-up"
+    class="mx-auto size-4 transition-all group-hover:-translate-y-0.5"
+  />
+</Button>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const scrollToTopButton = document.getElementById('scroll-to-top')
+    const footer = document.querySelector('footer')
+
+    if (scrollToTopButton && footer) {
+      scrollToTopButton.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      })
+
+      window.addEventListener('scroll', () => {
+        const footerRect = footer.getBoundingClientRect()
+        const isFooterVisible = footerRect.top <= window.innerHeight
+
+        scrollToTopButton.classList.toggle(
+          'hidden',
+          window.scrollY <= 300 || isFooterVisible,
+        )
+      })
+    }
+  })
+</script>
+
+<script>
+  const ensureKatexStyles = () => {
+    if (!document.querySelector('.katex')) return
+    if (document.querySelector('link[href*="katex.min.css"]')) return
+
+    const link = document.createElement('link')
+    link.rel = 'stylesheet'
+    link.href = 'https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css'
+    document.head.appendChild(link)
+  }
+
+  document.addEventListener('astro:page-load', ensureKatexStyles)
+  document.addEventListener('astro:after-swap', ensureKatexStyles)
+</script>

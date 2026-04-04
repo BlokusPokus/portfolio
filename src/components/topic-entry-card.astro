@@ -1,0 +1,57 @@
+---
+import Link from '@/components/link.astro'
+import { formatDate } from '@/lib/utils'
+import type { CollectionEntry } from 'astro:content'
+
+interface Props {
+  entry: CollectionEntry<'agents'> | CollectionEntry<'graveyard'>
+}
+
+const { entry } = Astro.props
+const { title, description, date, link } = entry.data
+
+const articleHref =
+  entry.collection === 'agents'
+    ? `/agents-and-pipelines/${entry.id}`
+    : `/graveyard/${entry.id}`
+---
+
+<div
+  class="hover:bg-muted/50 rounded-xl border transition-colors duration-300 ease-in-out"
+>
+  <Link
+    href={articleHref}
+    class="group text-foreground block p-4 no-underline hover:no-underline"
+  >
+    <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+      <h3 class="text-lg font-medium">{title}</h3>
+      <time
+        class="text-muted-foreground shrink-0 text-sm tabular-nums"
+        datetime={date.toISOString()}
+      >
+        {formatDate(date)}
+      </time>
+    </div>
+    <p class="text-muted-foreground mt-2 text-sm leading-relaxed">
+      {description}
+    </p>
+    <span
+      class="text-muted-foreground group-hover:text-foreground mt-3 inline-block text-sm underline underline-offset-4 decoration-muted-foreground group-hover:decoration-foreground"
+    >
+      Read full note
+    </span>
+  </Link>
+  {
+    link && (
+      <div class="border-t border-border px-4 py-3">
+        <Link
+          href={link}
+          external
+          class="text-muted-foreground hover:text-foreground text-sm underline underline-offset-4"
+        >
+          Open external link
+        </Link>
+      </div>
+    )
+  }
+</div>

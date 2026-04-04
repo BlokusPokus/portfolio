@@ -6,43 +6,46 @@ import Breadcrumbs from '@/components/breadcrumbs.astro'
 import Layout from '@/layouts/layout.astro'
 import PageHead from '@/components/page-head.astro'
 import TopicEntryCard from '@/components/topic-entry-card.astro'
-import { getGraveyardEntries } from '@/lib/data-utils'
+import { getAgentsEntries } from '@/lib/data-utils'
 import { formatDate } from '@/lib/utils'
 
-const entries = await getGraveyardEntries()
+const entries = await getAgentsEntries()
 const lastUpdated =
   entries[0]?.data.date ?? new Date('2026-04-01')
 ---
 
 <Layout class="max-w-3xl">
-  <PageHead slot="head" title="Graveyard" />
+  <PageHead slot="head" title="Agents and Pipelines" />
 
   <Breadcrumbs
     items={[
       { href: '/blog', label: 'Blog', icon: 'lucide:library-big' },
-      { label: 'Graveyard', icon: 'lucide:archive' },
+      {
+        label: 'Agents and Pipelines',
+        icon: 'lucide:workflow',
+      },
     ]}
   />
 
   <div class="flex min-h-[calc(100vh-18rem)] flex-col gap-y-8">
     <section class="flex flex-col gap-y-4">
-      <div class="font-medium lowercase">graveyard</div>
+      <div class="font-medium lowercase">agents and pipelines</div>
       <p class="text-muted-foreground text-sm">
-        Where dead projects rest · Last updated: {formatDate(lastUpdated)}
+        Automations, tooling, and how I run agents end to end · Last updated:
+        {formatDate(lastUpdated)}
       </p>
     </section>
 
     <article class="prose max-w-none">
       <p class="mt-0">
-        Not everything ships. Some ideas get built halfway, hit a wall, or get
-        abandoned for a better one. This page is an honest archive: things I
-        stopped investing in, and what they taught me anyway.
+        This is where I document how I wire AI agents, scripts, and models
+        into pipelines that stay reliable: boundaries between steps, failure
+        handling, and what I automate versus what I keep human-in-the-loop.
       </p>
       <p>
-        If you are browsing here, you will find short post-mortems—what I tried,
-        why it ended, and what I would do differently. It is as much for my own
-        memory as for anyone who thinks failure is only useful when it is
-        documented.
+        Expect short, practical notes—stack choices, patterns that survived
+        production, and things I retired when they stopped earning their
+        complexity. More write-ups will land here as I ship them.
       </p>
     </article>
 
@@ -53,13 +56,14 @@ const lastUpdated =
           entries.length === 0 ? (
             <li>
               <div class="rounded-xl border p-4 text-muted-foreground text-sm leading-relaxed">
-                No tombstones yet. Add a markdown file under{' '}
-                <code class="text-foreground/80">src/content/graveyard/</code>{' '}
-                with <code class="text-foreground/80">title</code>,{' '}
+                No notes yet. Add a markdown file under{' '}
+                <code class="text-foreground/80">src/content/agents/</code> with{' '}
+                <code class="text-foreground/80">title</code>,{' '}
                 <code class="text-foreground/80">description</code>, and{' '}
-                <code class="text-foreground/80">date</code>. Copy{' '}
-                <code class="text-foreground/80">_example.md</code>, then remove{' '}
-                <code class="text-foreground/80">draft: true</code> to publish.
+                <code class="text-foreground/80">date</code> in the frontmatter.
+                Copy <code class="text-foreground/80">_example.md</code>, then
+                remove <code class="text-foreground/80">draft: true</code> to
+                publish.
               </div>
             </li>
           ) : (
