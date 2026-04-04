@@ -1,4 +1,4 @@
-name: Deploy Prod
+name: Deploy Portfolio Prod
 
 on:
   push:
@@ -9,7 +9,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy to droplet
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build site
+        run: npm run build
+
+      - name: Upload build to droplet
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USER }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          source: "dist/*"
+          target: "/tmp/portfolio-dist"
+
+      - name: Publish site
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.PROD_HOST }}
@@ -17,7 +41,14 @@ jobs:
           key: ${{ secrets.PROD_SSH_KEY }}
           script: |
             set -e
-            cd /portfolio
-            git fetch origin
-            git reset --hard origin/main
-            docker compose -f docker-compose.prod.yml up -d --build
+
+            test -d /tmp/portfolio-dist/dist
+
+            rm -rf /tmp/portfolio-live
+            mkdir -p /tmp/portfolio-live
+            cp -r /tmp/portfolio-dist/dist/* /tmp/portfolio-live/
+
+            rm -rf /home/deploy/ai_assistant/docker/nginx/html/*
+            cp -r /tmp/portfolio-live/* /home/deploy/ai_assistant/docker/nginx/html/
+
+            docker restart personal_assistant_nginx_prod
