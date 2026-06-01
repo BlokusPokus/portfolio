@@ -7,7 +7,7 @@ export const SITE: Site = {
   href: 'https://astro-erudite.vercel.app',
   author: 'Ian Le Blanc',
   locale: 'en-US',
-  featuredPostCount: 2,
+  featuredPostCount: 3,
   postsPerPage: 3,
 }
 

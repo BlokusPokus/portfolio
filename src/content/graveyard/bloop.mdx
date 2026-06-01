@@ -1,0 +1,29 @@
+---
+title: Bloop
+description: >-
+  A multi-user AI assistant platform with JWT/MFA/RBAC auth, Redis and Postgres,
+  and productivity integrations—parked in 2026.
+date: 2026-06-01
+draft: false
+link: https://github.com/BlokusPokus/ai_assistant
+---
+
+**Active:** 2025 → 2026
+
+Bloop was my attempt at a production-shaped AI assistant: multiple users, proper auth, and enough backend structure that it felt like software rather than a demo script.
+
+## What it was
+
+- **Auth:** JWT sessions, MFA, RBAC
+- **Stack:** Python, FastAPI, PostgreSQL, Redis, Docker, TypeScript on the client
+- **Goal:** Integrations and workflows around a shared assistant, not a single-user chat toy
+
+The repo is still on GitHub if you want to poke at the architecture.
+
+## Why it is here
+
+I stopped investing in Bloop when other builds (SplitSound, portfolio tooling, narrower agents) needed the time more. The platform was far enough along to be useful as a reference for auth and service layout, but not something I wanted to keep shipping as a product.
+
+## What I kept
+
+Patterns for multi-tenant auth, queue-friendly workers, and not bolting inference onto a request/response API—all of that carried into later projects even though Bloop itself did not ship.
