@@ -17,7 +17,7 @@ const repoUrl = 'https://github.com/BlokusPokus/portfolio'
 
 
     <article
-      class="flex min-h-0 flex-col overflow-hidden rounded-lg border bg-card aspect-square w-full self-start"
+      class="flex min-h-0 flex-col overflow-hidden rounded-lg border border-foreground/25 bg-card aspect-square w-full self-start dark:border-foreground/35"
     >
       <div
         class="flex min-h-0 min-w-0 flex-1 flex-col gap-3 overflow-y-auto p-6"
@@ -186,68 +186,6 @@ const repoUrl = 'https://github.com/BlokusPokus/portfolio'
       class="flex min-h-0 flex-col overflow-hidden rounded-lg border bg-card aspect-[2/1] w-full self-start sm:col-span-2 sm:aspect-auto sm:h-[calc((100cqw-1rem)/2)] sm:max-h-[calc((100cqw-1rem)/2)] lg:h-[calc((100cqw-3rem)/4)] lg:max-h-[calc((100cqw-3rem)/4)]"
     >
       <Link
-        href="https://github.com/BlokusPokus/ai_assistant"
-        class="flex min-h-0 min-w-0 flex-1 flex-col gap-2 overflow-hidden p-6 transition-none"
-        external
-      >
-        <h3 class="shrink-0 text-lg font-medium leading-snug">Bloop</h3>
-        <p
-          class="text-muted-foreground min-h-0 min-w-0 flex-1 overflow-y-auto text-pretty text-sm"
-        >
-          A production-ready, multi-user AI assistant platform with secure auth
-          (JWT, MFA, RBAC), Redis/Postgres infrastructure, and integrations for
-          productivity workflows.
-        </p>
-        <p class="text-muted-foreground/70 shrink-0 text-xs">2025 -> 2026</p>
-        <div
-          class="flex shrink-0 flex-nowrap gap-2 overflow-x-auto pb-0.5 [scrollbar-width:thin]"
-        >
-          <span class="bg-muted text-muted-foreground rounded-md px-2 py-1 text-xs">
-            Python
-          </span>
-          <span class="bg-muted text-muted-foreground rounded-md px-2 py-1 text-xs">
-            FastAPI
-          </span>
-          <span class="bg-muted text-muted-foreground rounded-md px-2 py-1 text-xs">
-            PostgreSQL
-          </span>
-          <span class="bg-muted text-muted-foreground rounded-md px-2 py-1 text-xs">
-            Redis
-          </span>
-          <span class="bg-muted text-muted-foreground rounded-md px-2 py-1 text-xs">
-            Docker
-          </span>
-          <span class="bg-muted text-muted-foreground rounded-md px-2 py-1 text-xs">
-            TypeScript
-          </span>
-        </div>
-      </Link>
-    </article>
-
-    <article
-      class="flex min-h-0 flex-col overflow-hidden rounded-lg border bg-card aspect-square w-full self-start"
-    >
-      <div
-        class="flex min-h-0 min-w-0 flex-1 flex-col justify-between overflow-y-auto p-6"
-      >
-        <h2 class="text-lg font-medium leading-snug">Resume</h2>
-        <p class="text-muted-foreground text-sm">
-          A concise overview of experience, selected work, and technical skills.
-        </p>
-        <Link
-          href="/static/CV%20-%20Ian%20Le%20Blanc%20.pdf"
-          class="text-sm underline underline-offset-4"
-          external
-        >
-          View Resume
-        </Link>
-      </div>
-    </article>
-
-    <article
-      class="flex min-h-0 flex-col overflow-hidden rounded-lg border bg-card aspect-[2/1] w-full self-start sm:col-span-2 sm:aspect-auto sm:h-[calc((100cqw-1rem)/2)] sm:max-h-[calc((100cqw-1rem)/2)] lg:h-[calc((100cqw-3rem)/4)] lg:max-h-[calc((100cqw-3rem)/4)]"
-    >
-      <Link
         href="/agents-and-pipelines"
         class="flex min-h-0 min-w-0 flex-1 flex-col justify-between gap-3 overflow-y-auto p-6 transition-none"
       >
@@ -262,6 +200,26 @@ const repoUrl = 'https://github.com/BlokusPokus/portfolio'
           Open agents and pipelines
         </span>
       </Link>
+    </article>
+
+    <article
+      class="flex min-h-0 flex-col overflow-hidden rounded-lg border bg-card aspect-square w-full self-start"
+    >
+      <div
+        class="flex min-h-0 min-w-0 flex-1 flex-col justify-between overflow-y-auto p-6"
+      >
+        <h2 class="text-lg font-medium leading-snug">Resume</h2>
+        <p class="text-muted-foreground text-sm">
+          A concise overview of experience, selected work, and technical skills.
+        </p>
+        <Link
+          href="/static/CV-Ian-Le-Blanc-SWE.pdf"
+          class="text-sm underline underline-offset-4"
+          external
+        >
+          View Resume
+        </Link>
+      </div>
     </article>
 
     <article
